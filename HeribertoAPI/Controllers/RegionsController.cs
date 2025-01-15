@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
+using HeribertoAPI.CustomActionsFilters;
 using HeribertoAPI.Models.Domain;
 using HeribertoAPI.Models.DTO;
 using HeribertoAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeribertoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly IRegionRepository regionRepository;
@@ -18,7 +21,6 @@ namespace HeribertoAPI.Controllers
             this.regionRepository = regionRepository;
             this.mapper = mapper;
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -43,6 +45,7 @@ namespace HeribertoAPI.Controllers
 
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             // Map or convert DTO to Domain Model
@@ -53,6 +56,7 @@ namespace HeribertoAPI.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> UpdateById(Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             var existingRegion = await this.regionRepository.Update(id, updateRegionRequestDto);
